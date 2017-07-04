@@ -5,12 +5,16 @@ elseif exists("b:current_syntax")
   finish
 endif
 
-syn region booklitBraceRange matchgroup=Delimiter start="{" end="}" contains=booklitExprStart,booklitInnerBraceRange nextgroup=booklitBrackRange,booklitBraceRange contained
+syn region booklitBraceRange matchgroup=Delimiter start="{" end="}" contains=booklitExprStart,booklitInnerBraceRange nextgroup=booklitBraceRange contained
 syn region booklitInnerBraceRange matchgroup=booklitBraceRange start="{" end="}" contains=booklitExprStart,booklitInnerBraceRange contained
 
-syn match booklitIdentifier /[a-zA-Z0-9\-_]\+/ nextgroup=booklitBraceRange,booklitBrackRange contained
+syn region booklitPreformattedBraceRange matchgroup=Delimiter start="{{" end="}}" contains=booklitExprStart,booklitInnerBraceRange nextgroup=booklitPreformattedBraceRange contained
 
-syn match booklitExprStart "\\" nextgroup=booklitBrackRange,booklitBraceRange,booklitIdentifier,@AtomyBase containedin=booklitBraceRange,booklitInnerBraceRange,@AtomyBase
+syn region booklitVerbatimBraceRange matchgroup=Delimiter start="{{{" end="}}}" nextgroup=booklitVerbatimBraceRange contained
+
+syn match booklitIdentifier /[a-zA-Z0-9\-_]\+/ nextgroup=booklitBraceRange,booklitVerbatimBraceRange,booklitPreformattedBraceRange contained
+
+syn match booklitExprStart "\\" nextgroup=brooklitVerbatimBraceRange,booklitPreformattedBraceRange,booklitBraceRange,booklitIdentifier containedin=brooklitVerbatimBraceRange,booklitBraceRange,booklitInnerBraceRange
 
 syn region booklitBlockComment start="{-"  end="-}" contains=booklitBlockComment
 
@@ -27,6 +31,9 @@ if version >= 508 || !exists("did_booklit_syntax_inits")
 
   HiLink booklitExprStart           Statement
   HiLink booklitIdentifier          Statement
+
+  HiLink booklitPreformattedBraceRange  String
+  HiLink booklitVerbatimBraceRange      String
 
   delcommand HiLink
 endif
